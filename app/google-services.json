@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "473454171226",
+    "project_id": "englishpracticevocabs",
+    "storage_bucket": "englishpracticevocabs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:473454171226:android:83c3e6992616099fd5f463",
+        "android_client_info": {
+          "package_name": "com.englishpracticevocab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUjti5kH60q8iLbvEn_YlEYWZ0AfMz6YM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
