@@ -37,9 +37,9 @@
         android:layout_alignParentBottom="true"
         android:id="@+id/adView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_150sdp"
         app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:adUnitId="ca-app-pub-7484865336777284/6587441767"
         />
 
 

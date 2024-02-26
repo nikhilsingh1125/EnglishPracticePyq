@@ -102,9 +102,31 @@ class QuizActivity : AppCompatActivity() {
                 }
             })
 
+        val database = FirebaseDatabase.getInstance().getReference(type.toString())
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                loader.visibility = View.GONE
+                val description = dataSnapshot.child("Description").getValue(String::class.java)
+                val questions = dataSnapshot.child("Questions")
+                    .getValue(object : GenericTypeIndicator<List<QuestionData>>() {})
+                val quiz = QuestionWiseModel(
+                    "SYNONYMS_2019",
+                    description,
+                    questions as ArrayList<QuestionData>
+                )
+                // Do something with the quiz object
+                Log.e(TAG, "onDataChange: $questions")
 
+                val adapter =
+                    ViewPagerAdapter(this@QuizActivity, questions, type, category, type)
+                idViewPager.adapter = adapter
+            }
 
-        if (type == "0") {
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle errors here
+            }
+        })
+       /* if (type == "0") {
             val database = FirebaseDatabase.getInstance().getReference("SSC_CGL_2022/SYNONYMS_2022")
             database.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -293,7 +315,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHCL_2") {
+        }
+        else if (type == "CHCL_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("Chsl_SYNONYMS_2022/ANTONYMS_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -324,7 +347,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHCL_3") {
+        }
+        else if (type == "CHCL_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("Chsl_SYNONYMS_2022/ONE_WORDS_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -355,7 +379,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHCL_4") {
+        }
+        else if (type == "CHCL_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("Chsl_SYNONYMS_2022/IDIOMS_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -386,7 +411,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHCL_5") {
+        }
+        else if (type == "CHCL_5") {
             val database =
                 FirebaseDatabase.getInstance()
                     .getReference("Chsl_SYNONYMS_2022/SPELLING_ERROR_2022")
@@ -418,7 +444,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_1") {
+        }
+        else if (type == "CPO_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2022/SYNONYMS_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -449,7 +476,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_2") {
+        }
+        else if (type == "CPO_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2022/ANTONYMS_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -480,7 +508,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_3") {
+        }
+        else if (type == "CPO_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2022/ONEWORD_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -511,7 +540,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_4") {
+        }
+        else if (type == "CPO_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2022/IDIOMS_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -542,7 +572,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_5") {
+        }
+        else if (type == "CPO_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2022/SPELLING_ERROR_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -606,7 +637,8 @@ class QuizActivity : AppCompatActivity() {
                 }
             })
 
-        } else if (type == "MTS_2") {
+        }
+        else if (type == "MTS_2") {
             val database = FirebaseDatabase.getInstance().getReference("SSC_MTS_2022/ANTONYMS_2022")
             database.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -637,7 +669,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_3") {
+        }
+        else if (type == "MTS_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2022/ONE_WORDS_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -668,7 +701,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_4") {
+        }
+        else if (type == "MTS_4") {
             val database = FirebaseDatabase.getInstance().getReference("SSC_MTS_2022/IDIOMS_2022")
             database.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -698,7 +732,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_5") {
+        }
+        else if (type == "MTS_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2022/SPELLING_ERROR_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -729,7 +764,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "Stenographer_1") {
+        }
+        else if (type == "Stenographer_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_Stenographer_2022/SYNONYMS_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -760,7 +796,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "Stenographer_2") {
+        }
+        else if (type == "Stenographer_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_Stenographer_2022/ANTONYMS_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -791,7 +828,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "Stenographer_3") {
+        }
+        else if (type == "Stenographer_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_Stenographer_2022/IDIOMS_2022")
             database.addValueEventListener(object : ValueEventListener {
@@ -822,7 +860,9 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2021_1") {
+        }
+
+        else if (type == "CGL_2021_1") {
             try {
                 val database =
                     FirebaseDatabase.getInstance().getReference("SSC_CGL_2021/SYNONYMS_2021")
@@ -855,7 +895,8 @@ class QuizActivity : AppCompatActivity() {
 
             }
 
-        } else if (type == "CGL_2021_2") {
+        }
+        else if (type == "CGL_2021_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2021/ANTONYMS_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -881,7 +922,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2021_3") {
+        }
+        else if (type == "CGL_2021_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2021/ONE_WORDS_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -912,7 +954,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2021_4") {
+        }
+        else if (type == "CGL_2021_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2021/IDIOMS_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -943,7 +986,10 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2021_5") {
+        }
+
+
+        else if (type == "CGL_2021_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2021/SPELLING_ERROR_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -974,7 +1020,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHCL_2021_1") {
+        }
+        else if (type == "CHCL_2021_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2021/SYNONYMS_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -1011,7 +1058,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHCL_2021_2") {
+        }
+        else if (type == "CHCL_2021_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2021/ANTONYMS_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -1042,7 +1090,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHCL_2021_3") {
+        }
+        else if (type == "CHCL_2021_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2021/ONE_WORDS_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -1073,7 +1122,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHCL_2021_4") {
+        }
+        else if (type == "CHCL_2021_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2021/IDIOMS_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -1104,7 +1154,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHCL_2021_5") {
+        }
+        else if (type == "CHCL_2021_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2021/SPELLING_ERROR_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -1135,7 +1186,9 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2021_1") {
+        }
+
+        else if (type == "MTS_2021_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2021/SYNONYMS_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -1172,7 +1225,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2021_2") {
+        }
+        else if (type == "MTS_2021_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2021/ANTONYMS_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -1203,7 +1257,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2021_3") {
+        }
+        else if (type == "MTS_2021_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2021/ONE_WORDS_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -1234,38 +1289,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2021_4") {
-            val database =
-                FirebaseDatabase.getInstance().getReference("SSC_MTS_2021/SPELLING_ERROR_2021")
-            database.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    loader.visibility = View.GONE
-                    val description = dataSnapshot.child("Description").getValue(String::class.java)
-                    val questions = dataSnapshot.child("Questions")
-                        .getValue(object : GenericTypeIndicator<List<QuestionData>>() {})
-                    val quiz = QuestionWiseModel(
-                        "IDIOMS_2021",
-                        description,
-                        questions as ArrayList<QuestionData>
-                    )
-                    // Do something with the quiz object
-                    Log.e(TAG, "onDataChange: $questions")
-
-                    val adapter = ViewPagerAdapter(
-                        this@QuizActivity,
-                        questions,
-                        title,
-                        category,
-                        type
-                    )
-                    idViewPager.adapter = adapter
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    // Handle errors here
-                }
-            })
-        } else if (type == "MTS_2021_5") {
+        }
+        else if (type == "MTS_2021_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2021/IDIOMS_2021")
             database.addValueEventListener(object : ValueEventListener {
@@ -1296,7 +1321,41 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2020_1") {
+        }
+        else if (type == "MTS_2021_5") {
+            val database =
+                FirebaseDatabase.getInstance().getReference("SSC_MTS_2021/SPELLING_ERROR_2021")
+            database.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    loader.visibility = View.GONE
+                    val description = dataSnapshot.child("Description").getValue(String::class.java)
+                    val questions = dataSnapshot.child("Questions")
+                        .getValue(object : GenericTypeIndicator<List<QuestionData>>() {})
+                    val quiz = QuestionWiseModel(
+                        "IDIOMS_2021",
+                        description,
+                        questions as ArrayList<QuestionData>
+                    )
+                    // Do something with the quiz object
+                    Log.e(TAG, "onDataChange: $questions")
+
+                    val adapter = ViewPagerAdapter(
+                        this@QuizActivity,
+                        questions,
+                        title,
+                        category,
+                        type
+                    )
+                    idViewPager.adapter = adapter
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Handle errors here
+                }
+            })
+        }
+
+        else if (type == "CGL_2020_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2020/SYNONYMS_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1333,7 +1392,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2020_2") {
+        }
+        else if (type == "CGL_2020_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2020/ANTONYMS_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1370,7 +1430,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2020_3") {
+        }
+        else if (type == "CGL_2020_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2020/ONEWORD_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1407,7 +1468,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2020_4") {
+        }
+        else if (type == "CGL_2020_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2020/IDIOMS_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1416,11 +1478,11 @@ class QuizActivity : AppCompatActivity() {
                     val description = dataSnapshot.child("Description").getValue(String::class.java)
                     val questions = dataSnapshot.child("Questions")
                         .getValue(object : GenericTypeIndicator<List<QuestionData>>() {})
-                    /* val quiz = QuestionWiseModel(
+                    *//* val quiz = QuestionWiseModel(
                          "SYNONYMS_2021",
                          description,
                          questions as ArrayList<QuestionData>
-                     )*/
+                     )*//*
                     // Do something with the quiz object
 //                    Log.e(TAG, "onDataChange: $questions")
 
@@ -1446,7 +1508,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2020_5") {
+        }
+        else if (type == "CGL_2020_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2020/SPELLING_ERROR_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1483,7 +1546,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2020_1") {
+        }
+        else if (type == "MTS_2020_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2020/SYNONYMS_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1520,7 +1584,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2020_2") {
+        }
+        else if (type == "MTS_2020_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2020/ANTONYMS_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1557,7 +1622,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2020_3") {
+        }
+        else if (type == "MTS_2020_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2020/ONEWORD_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1594,7 +1660,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2020_4") {
+        }
+        else if (type == "MTS_2020_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2020/IDIOMS_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1631,7 +1698,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2020_5") {
+        }
+        else if (type == "MTS_2020_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2020/SPELLING_ERROR_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1668,7 +1736,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2020_1") {
+        }
+        else if (type == "CHSL_2020_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2020/SYNONYMS_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1706,7 +1775,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2020_2") {
+        }
+        else if (type == "CHSL_2020_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2020/ANTONYMS_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1743,7 +1813,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2020_3") {
+        }
+        else if (type == "CHSL_2020_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2020/ONEWORD_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1780,7 +1851,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2020_4") {
+        }
+        else if (type == "CHSL_2020_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2020/Idioms_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1817,7 +1889,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2020_5") {
+        }
+        else if (type == "CHSL_2020_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2020/SPELLING_ERROR_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1854,7 +1927,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_2020_1") {
+        }
+        else if (type == "CPO_2020_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2020/SYNONYMS_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1891,7 +1965,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_2020_2") {
+        }
+        else if (type == "CPO_2020_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2020/ANTONYMS_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1928,7 +2003,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_2020_3") {
+        }
+        else if (type == "CPO_2020_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2020/ONEWORD_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -1965,7 +2041,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_2020_4") {
+        }
+        else if (type == "CPO_2020_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2020/Idioms_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -2002,7 +2079,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_2020_5") {
+        }
+        else if (type == "CPO_2020_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2020/SPELLING_ERROR_2020")
             database.addValueEventListener(object : ValueEventListener {
@@ -2039,7 +2117,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2019_1") {
+        }
+        else if (type == "CGL_2019_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2019/SYNONYMS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2070,7 +2149,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2019_2") {
+        }
+        else if (type == "CGL_2019_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2019/ANTONYMS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2101,7 +2181,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2019_3") {
+        }
+        else if (type == "CGL_2019_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2019/ONEWORD_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2132,7 +2213,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2019_4") {
+        }
+        else if (type == "CGL_2019_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2019/Idioms_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2163,7 +2245,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2019_5") {
+        }
+        else if (type == "CGL_2019_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2019/SPELLING_ERROR_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2194,7 +2277,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2019_1") {
+        }
+        else if (type == "MTS_2019_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2019/SYNONYMS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2225,7 +2309,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2019_2") {
+        }
+        else if (type == "MTS_2019_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2019/ANTONYMS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2256,7 +2341,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2019_3") {
+        }
+        else if (type == "MTS_2019_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2019/ONE_WORDS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2287,7 +2373,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2019_4") {
+        }
+        else if (type == "MTS_2019_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2019/IDIOMS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2318,7 +2405,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "MTS_2019_5") {
+        }
+        else if (type == "MTS_2019_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_MTS_2019/SPELLING_ERROR_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2349,7 +2437,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_2019_1") {
+        }
+        else if (type == "CPO_2019_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2019/SYNONYMS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2380,7 +2469,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_2019_2") {
+        }
+        else if (type == "CPO_2019_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2019/ANTONYMS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2411,7 +2501,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_2019_3") {
+        }
+        else if (type == "CPO_2019_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2019/ONE_WORDS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2442,7 +2533,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_2019_4") {
+        }
+        else if (type == "CPO_2019_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2019/IDIOMS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2473,7 +2565,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CPO_2019_5") {
+        }
+        else if (type == "CPO_2019_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CPO_2019/SPELLING_ERROR_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2504,7 +2597,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2019_1") {
+        }
+        else if (type == "CHSL_2019_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2019/SYNONYMS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2535,7 +2629,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2019_2") {
+        }
+        else if (type == "CHSL_2019_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2019/ANTONYMS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2566,7 +2661,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2019_3") {
+        }
+        else if (type == "CHSL_2019_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2019/ONE_WORDS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2597,7 +2693,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2019_4") {
+        }
+        else if (type == "CHSL_2019_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2019/IDIOMS_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2628,7 +2725,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2019_5") {
+        }
+        else if (type == "CHSL_2019_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2019/SPELLING_ERROR_2019")
             database.addValueEventListener(object : ValueEventListener {
@@ -2659,7 +2757,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2023_1") {
+        }
+        else if (type == "CGL_2023_1") {
             val database = FirebaseDatabase.getInstance().getReference("SSC_CGL_2023/SYNONYMS_2023")
             database.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -2684,7 +2783,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2023_2") {
+        }
+        else if (type == "CGL_2023_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2023/ANTONYMS_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -2710,7 +2810,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2023_3") {
+        }
+        else if (type == "CGL_2023_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2023/ONE_WORDS_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -2737,7 +2838,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2023_4") {
+        }
+        else if (type == "CGL_2023_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2023/IDIOMS_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -2764,7 +2866,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CGL_2023_5") {
+        }
+        else if (type == "CGL_2023_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CGL_2023/SPELLING_ERROR_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -2791,7 +2894,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "PHASE_2023_1") {
+        }
+        else if (type == "PHASE_2023_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_PHASE_2023/SYNONYMS_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -2818,7 +2922,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "PHASE_2023_2") {
+        }
+        else if (type == "PHASE_2023_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_PHASE_2023/ANTONYMS_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -2845,7 +2950,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "PHASE_2023_3") {
+        }
+        else if (type == "PHASE_2023_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_PHASE_2023/ONE_WORDS_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -2872,7 +2978,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "PHASE_2023_4") {
+        }
+        else if (type == "PHASE_2023_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_PHASE_2023/IDIOMS_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -2900,7 +3007,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "PHASE_2023_5") {
+        }
+        else if (type == "PHASE_2023_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_PHASE_2023/SPELLING_ERROR_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -2928,7 +3036,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2023_1") {
+        }
+        else if (type == "CHSL_2023_1") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2023/SYNONYMS_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -2959,7 +3068,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2023_2") {
+        }
+        else if (type == "CHSL_2023_2") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2023/ANTONYMS_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -2990,7 +3100,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2023_3") {
+        }
+        else if (type == "CHSL_2023_3") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2023/ONE_WORDS_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -3021,7 +3132,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2023_4") {
+        }
+        else if (type == "CHSL_2023_4") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2023/IDIOMS_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -3052,7 +3164,8 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        } else if (type == "CHSL_2023_5") {
+        }
+        else if (type == "CHSL_2023_5") {
             val database =
                 FirebaseDatabase.getInstance().getReference("SSC_CHSL_2023/SPELLING_ERROR_2023")
             database.addValueEventListener(object : ValueEventListener {
@@ -3083,7 +3196,7 @@ class QuizActivity : AppCompatActivity() {
                     // Handle errors here
                 }
             })
-        }
+        }*/
 
     }
 
@@ -3259,6 +3372,8 @@ class QuizActivity : AppCompatActivity() {
     fun onPrevClick(position: Int) {
         idViewPager.setCurrentItem(idViewPager.currentItem - 1, true)
     }
+
+
 
 
 }

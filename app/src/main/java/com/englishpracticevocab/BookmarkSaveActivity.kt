@@ -15,9 +15,13 @@ import com.google.firebase.database.ValueEventListener
 import com.englishpracticevocab.adapter.BookmarkAdapter
 import com.englishpracticevocab.model.BookmarkedModel
 import com.englishpracticevocab.model.QuestionData
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import kotlinx.android.synthetic.main.activity_bookmark_save2.adViewBookmark
 import kotlinx.android.synthetic.main.activity_bookmark_save2.noData
 import kotlinx.android.synthetic.main.activity_bookmark_save2.noDataFound
 import kotlinx.android.synthetic.main.activity_bookmark_save2.recyclerViewBookmark
+import kotlinx.android.synthetic.main.activity_category2.adViewCat
 import kotlinx.android.synthetic.main.activity_quiz.loader
 import kotlinx.android.synthetic.main.custom_toolbar.action_bar_Title
 import kotlinx.android.synthetic.main.custom_toolbar.action_bar_back
@@ -42,6 +46,9 @@ class BookmarkSaveActivity : AppCompatActivity() {
         loader.visibility = View.VISIBLE
         loader.playAnimation()
 
+        MobileAds.initialize(this)
+        val adRequest = AdRequest.Builder().build()
+        adViewBookmark.loadAd(adRequest)
 
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         Log.e("BookMarkActivity", "deviceId ==> : $deviceId")

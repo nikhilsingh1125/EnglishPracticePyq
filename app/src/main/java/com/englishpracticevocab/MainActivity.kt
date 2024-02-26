@@ -2,13 +2,22 @@ package com.englishpracticevocab
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.englishpracticevocab.adapter.QuestionAdapter
+import com.englishpracticevocab.model.ExamCategory
 import com.englishpracticevocab.model.ListCategoryData
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.activity_main.adView
+import kotlinx.android.synthetic.main.activity_main.lottieLoader
 import kotlinx.android.synthetic.main.activity_main.recyclerView
+import kotlinx.android.synthetic.main.activity_quiz.loader
 import kotlinx.android.synthetic.main.custom_toolbar.action_bar_back
 import kotlinx.android.synthetic.main.custom_toolbar.action_bar_share
 import kotlinx.android.synthetic.main.custom_toolbar.btnSubmit
@@ -25,11 +34,17 @@ class MainActivity : AppCompatActivity() {
         val intent = intent
         type = intent.getStringExtra("TYPE").toString()
         val array = ArrayList<ListCategoryData>()
+        Log.d("MainActivity", "activity_main : $type")
 
-   /*     MobileAds.initialize(this)
+        lottieLoader.setAnimation(R.raw.loader)
+        lottieLoader.visibility = View.VISIBLE
+        lottieLoader.playAnimation()
+
+        getPaperTopicWiseData(type)
+        MobileAds.initialize(this)
 
         val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)*/
+        adView.loadAd(adRequest)
 
         action_bar_back.visibility = View.VISIBLE
         action_bar_share.visibility = View.GONE
@@ -39,32 +54,32 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        if (type == "CGL") {
+     /*   if (type == "CGL_2022") {
             array.add(ListCategoryData("Synonyms", ""))
             array.add(ListCategoryData("Antonyms", ""))
             array.add(ListCategoryData("Oneword", ""))
             array.add(ListCategoryData("Idioms and pharses", ""))
             array.add(ListCategoryData("Spelling Error", ""))
         }
-        else if (type == "CHCL") {
+        else if (type == "CHSL_2022") {
             array.add(ListCategoryData("Synonyms", ""))
             array.add(ListCategoryData("Antonyms", ""))
             array.add(ListCategoryData("Oneword", ""))
             array.add(ListCategoryData("Idioms and pharses", ""))
             array.add(ListCategoryData("Spelling Error", ""))
-        } else if (type == "CPO") {
+        } else if (type == "CPO_2022") {
             array.add(ListCategoryData("Synonyms", ""))
             array.add(ListCategoryData("Antonyms", ""))
             array.add(ListCategoryData("Oneword", ""))
             array.add(ListCategoryData("Idioms and pharses", ""))
             array.add(ListCategoryData("Spelling Error", ""))
         }
-        else if (type == "Stenographer") {
+        else if (type == "Steno_2022") {
             array.add(ListCategoryData("Synonyms", ""))
             array.add(ListCategoryData("Antonyms", ""))
             array.add(ListCategoryData("Idioms and pharses", ""))
         }
-        else if (type == "MTS") {
+        else if (type == "MTS_2022") {
             array.add(ListCategoryData("Synonyms", ""))
             array.add(ListCategoryData("Antonyms", ""))
             array.add(ListCategoryData("Oneword", ""))
@@ -168,19 +183,21 @@ class MainActivity : AppCompatActivity() {
             array.add(ListCategoryData("Oneword", ""))
             array.add(ListCategoryData("Idioms and pharses", ""))
             array.add(ListCategoryData("Spelling Error", ""))
-        }
+        }*/
 
 
-        recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+       /* recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         val rvAdapter = QuestionAdapter(this@MainActivity, array)
-        recyclerView.adapter = rvAdapter
+        recyclerView.adapter = rvAdapter*/
 
     }
 
-    fun goToQuizActi(model: ListCategoryData, position: Int) {
+    fun goToQuizActi(topicType: String, position: Int) {
 
         val intent = Intent(this, QuizActivity::class.java)
-        if (type == "CGL") {
+        intent.putExtra("TYPE", topicType)
+        startActivity(intent)
+      /*  if (type == "CGL") {
             if (position == 0) {
                 intent.putExtra("TYPE", "0")
                 intent.putExtra("Title", "SYNONYMS 2022")
@@ -199,7 +216,6 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("Category", "CGL IDIOMS 2022")
             }
             else if (position == 4) {
-
                 intent.putExtra("TYPE", "4")
                 intent.putExtra("Title", "Spelling Error 2022")
                 intent.putExtra("Category", "CGL Spelling Error 2022")
@@ -598,7 +614,7 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
-        else if (type == "PHASE_2023") {
+        else if (type == "Phase_2023") {
             if (position == 0) {
                 intent.putExtra("TYPE", "PHASE_2023_1")
                 intent.putExtra("Title", "SYNONYMS 2023")
@@ -649,9 +665,42 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-        }
+        }*/
 
-            startActivity(intent)
+
     }
 
+    fun getPaperTopicWiseData(type: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        val collectionRef = db.collection("paper_wise_topic")
+
+        collectionRef.get()
+            .addOnSuccessListener { querySnapshot ->
+                Log.d(TAG, "querySnapshot: $querySnapshot")
+                lottieLoader.visibility = View.GONE
+//                loader.visibility = View.GONE
+                for (doc in querySnapshot) {
+                    val yeardata = doc.data
+                    val yearData = yeardata[type]
+
+                    if (yearData is Map<*, *>) {
+                        val gson = Gson()
+                        val testListType = object : TypeToken<List<ExamCategory>>() {}.type
+                        val testList: List<ExamCategory> = gson.fromJson(gson.toJson(yearData[type]), testListType)
+
+//                        val yearDataObject = ExamSection(testList, yeardata["collections"] as Map<String, Any>?)
+                        recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+                        val rvAdapter = QuestionAdapter(this@MainActivity, testList)
+                        recyclerView.adapter = rvAdapter
+                        Log.e(TAG, "testList: $testList")
+                    } else {
+                        Log.e(TAG, "Invalid yearData type")
+                    }
+                }
+            }
+            .addOnFailureListener { error ->
+                Log.e("FirestoreError", "Error getting documents: $error")
+            }
+    }
 }

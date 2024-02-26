@@ -44,6 +44,9 @@ class HomeCategoryActivity : AppCompatActivity() {
 
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
+
+
+
         addBannerImages()
         action_bar_share.setOnClickListener {
             Constants.shareApp(this)

@@ -72,4 +72,12 @@
         android:visibility="gone"
         app:lottie_loop="true" />
 
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adViewBookmark"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"
+        android:layout_alignParentBottom="true"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-7484865336777284/6587441767" />
+
 </RelativeLayout>

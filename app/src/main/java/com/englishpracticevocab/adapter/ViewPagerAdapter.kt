@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,14 +19,22 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.PagerAdapter
 import com.englishpracticevocab.QuizActivity
 import com.englishpracticevocab.R
+import com.englishpracticevocab.model.BookmarkRoomModel
 import com.englishpracticevocab.model.QuestionData
 import com.englishpracticevocab.model.ResultShowData
+import com.englishpracticevocab.utils.AppDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.custom_toolbar.view.btnSubmit
 import kotlinx.android.synthetic.main.row_question_list.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.w3c.dom.Text
 import java.util.*
 
 class ViewPagerAdapter(
@@ -52,6 +61,7 @@ class ViewPagerAdapter(
     val resultDataList = mutableListOf<ResultShowData>()
     var skipedAnswer = 0
     val bookmarkStates: MutableMap<String, Boolean> = mutableMapOf()
+    var textToSpeech: TextToSpeech? = null
     private val sharedPrefs: SharedPreferences = context.getSharedPreferences(
         "bookmark_prefs",
         Context.MODE_PRIVATE
@@ -118,7 +128,7 @@ class ViewPagerAdapter(
         }
 
 //        val questionIdentifier = model.generateIdentifier()
-
+        val appDatabase = AppDatabase.getInstance(context)
         val questionIdentifier = model.generateIdentifier()
         val isBookmarked = sharedPrefs.getBoolean(questionIdentifier, false)
 
@@ -155,15 +165,24 @@ class ViewPagerAdapter(
                 itemView.imgBookmarkFill.visibility = View.GONE
                 itemView.imgBookmarkUnfill.visibility = View.VISIBLE
                 model.isBookmark = false
-
                 // Update bookmark state in SharedPreferences
                 sharedPrefs.edit().putBoolean(questionIdentifier, false).apply()
-
                 // Call the removeBookmarkedQuestionFromDatabase function with the question's type, category, and identifier
                 removeBookmarkForQuestion(model,category,deviceId)
             }
         }
+        // create an object textToSpeech and adding features into it
+        textToSpeech = TextToSpeech(context) { i ->
+            // if No error is found then only it will run
+            if (i != TextToSpeech.ERROR) {
+                // To Choose language of speech
+                textToSpeech!!.language = Locale.UK
+            }
+        }
 
+        itemView.imgSpeak.setOnClickListener {
+            textToSpeech!!.speak(itemView.quizQuestion.text.toString(),TextToSpeech.QUEUE_FLUSH,null)
+        }
 
         Log.e("GenerateIdentifier", " isSkipAnswer :${model.isBookmark} ")
 
@@ -672,10 +691,6 @@ class ViewPagerAdapter(
             })
     }
 
-
-
-
-
     fun saveBookmarkedQuestions(model: QuestionData, deviceId: String) {
         val bookmarkedQuestions = getBookmarkedQuestions()
         saveBookmarkedQuestionsToDatabase(bookmarkedQuestions,category,model,deviceId)
@@ -705,6 +720,66 @@ class ViewPagerAdapter(
 
 
 
+/*    private suspend fun saveBookmarkedQuestionsToLocalDatabase(
+        bookmarkedQuestions: List<QuestionData>,
+        database: AppDatabase
+    ) {
+        withContext(Dispatchers.IO) {
+            val questionDataDao = database.resultBookmarkDao()
+
+            for (question in bookmarkedQuestions) {
+                val questionIdentifier = question.questionIdentifier
+
+                // Check if the question already exists in the database
+                val existingQuestion = questionDataDao.getQuestionById(questionIdentifier.toString())
+
+                if (existingQuestion == null) {
+                    // If the question doesn't exist, create an instance of QuestionDataEntity
+                    val questionDataEntity = BookmarkRoomModel(
+                        questionIdentifier = questionIdentifier.toString(),
+                        question = question.question.toString(),
+                        answer = question.answer.toString(),
+                        option_A = question.option_A.toString(),
+                        option_B = question.option_B.toString(),
+                        option_C = question.option_C.toString(),
+                        option_D = question.option_D.toString(),
+                        solutions = question.solutions.toString(),
+                        isGivenAnswer = question.isGivenAnswer,
+                        optionsSelected = question.optionsSelected.toString(),
+                        selectedOptionsAnswer = question.selectedOptionsAnswer.toString(),
+                        testCategory = question.testCategory.toString(),
+                        isBookmark = question.isBookmark,
+                        isSelectedAnswer = question.isSelectedAnswer,
+                        isSkipAnswer = question.isSkipAnswer,
+                        isWrongAnswer = question.isWrongAnswer,
+                    )
+
+                    // Insert the instance into the Room database
+                    questionDataDao.insertQuestion(questionDataEntity)
+                }
+            }
+        }
+
+    }
+
+    fun removeBookmarkFormLocalDb(question: QuestionData, database: AppDatabase) {
+        val questionIdentifier = question.questionIdentifier
+
+        if (questionIdentifier != null) {
+            val questionDataDao = database.resultBookmarkDao()
+
+            val existingQuestion = questionDataDao.getQuestionById(questionIdentifier)
+            if (existingQuestion != null) {
+                // If the question exists in the Room database, delete it
+                questionDataDao.deleteQuestion(existingQuestion)
+
+                // Optionally, you can show a message or take other actions upon successful removal
+                Toast.makeText(context, "Bookmark removed", Toast.LENGTH_SHORT).show()
+            } else {
+                // Handle the case where the question is not found in the database
+            }
+        }
+    }*/
 
 
 

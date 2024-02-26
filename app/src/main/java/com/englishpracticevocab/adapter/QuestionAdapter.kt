@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.englishpracticevocab.MainActivity
 import com.englishpracticevocab.R
-import com.englishpracticevocab.model.ListCategoryData
+import com.englishpracticevocab.model.ExamCategory
 import kotlinx.android.synthetic.main.row_note.view.*
 
 class QuestionAdapter(
     val context: Context,
-    val arrayList: ArrayList<ListCategoryData>
+    val arrayList: List<ExamCategory>
 ) : RecyclerView.Adapter<QuestionAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -24,9 +24,9 @@ class QuestionAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = arrayList[position]
-        holder.itemView.txtTitle.text = model.title
+        holder.itemView.txtTitle.text = model.name
         holder.itemView.cardQuestionTitle.setOnClickListener {
-            (context as MainActivity).goToQuizActi(model,position)
+            (context as MainActivity).goToQuizActi(model.id,position)
         }
 
     }

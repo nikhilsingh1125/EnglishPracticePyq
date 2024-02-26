@@ -16,9 +16,7 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import com.englishpracticevocab.adapter.HomeAdapter
-import com.englishpracticevocab.model.CategoryModel
-import com.englishpracticevocab.model.HomeBannerData
-import com.englishpracticevocab.utils.Constants
+import kotlinx.android.synthetic.main.activity_home.loader
 import kotlinx.android.synthetic.main.activity_main.recyclerView
 import kotlinx.android.synthetic.main.custom_toolbar.action_bar_Title
 import kotlinx.android.synthetic.main.custom_toolbar.action_bar_back
@@ -30,22 +28,23 @@ class HomeActivity : AppCompatActivity() {
 
     val TAG = "HomeActivity"
     private var rewardedAd: RewardedAd? = null
+    var arrYearData = mutableListOf<String>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
         val TAG = "HomeActivity"
-
+        loader.setAnimation(R.raw.loader)
+        loader.visibility = View.VISIBLE
+        loader.playAnimation()
 //        getVersion()
-
+        getYearWiseData()
        /* MobileAds.initialize(this)
 
 
 
         val adRequest = AdRequest.Builder().build()
         ad_view_home.c(adRequest)*/
-
-//        addBannerImages()
 
 
         action_bar_share.visibility = View.GONE
@@ -81,53 +80,22 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
 
-        val array = ArrayList<CategoryModel>()
+       /* val array = ArrayList<CategoryModel>()
         array.add(CategoryModel("2023", R.drawable.study))
         array.add(CategoryModel("2022", R.drawable.study))
         array.add(CategoryModel("2021", R.drawable.study))
         array.add(CategoryModel("2020", R.drawable.study))
-        array.add(CategoryModel("2019", R.drawable.study))
-
-
-        recyclerView.layoutManager = GridLayoutManager(this@HomeActivity, 2)
-        val rvAdapter = HomeAdapter(this@HomeActivity, array)
-        recyclerView.adapter = rvAdapter
-    }
-
-    private fun addBannerImages() {
-
-        val images = ArrayList<HomeBannerData>()
-        images.add(HomeBannerData(R.drawable.quotes_banner))
-        images.add(HomeBannerData(R.drawable.banner_2))
+        array.add(CategoryModel("2019", R.drawable.study))*/
 
 
     }
 
-    private var doubleBackToExitPressedOnce = false
 
-    fun goToCategory(model: CategoryModel, position: Int) {
 
-        if (position == 0) {
-            val intent = Intent(this, CategoryActivity::class.java)
-            intent.putExtra("TYPE", "2023")
-            startActivity(intent)
-        } else if (position == 1) {
-            val intent = Intent(this, CategoryActivity::class.java)
-            intent.putExtra("TYPE", "2022")
-            startActivity(intent)
-        } else if (position == 2) {
-            val intent = Intent(this, CategoryActivity::class.java)
-            intent.putExtra("TYPE", "2021")
-            startActivity(intent)
-        } else if (position == 3) {
-            val intent = Intent(this, CategoryActivity::class.java)
-            intent.putExtra("TYPE", "2020")
-            startActivity(intent)
-        } else if (position == 4) {
-            val intent = Intent(this, CategoryActivity::class.java)
-            intent.putExtra("TYPE", "2019")
-            startActivity(intent)
-        }
+    fun goToCategory(model: String, position: Int) {
+        val intent = Intent(this, CategoryActivity::class.java)
+        intent.putExtra("TYPE", model)
+        startActivity(intent)
 
         fun showAd() {
             rewardedAd?.let { ad ->
@@ -144,45 +112,47 @@ class HomeActivity : AppCompatActivity() {
 
 
     }
-    fun getVersion() {
+
+
+
+    fun getYearWiseData() {
         val db = FirebaseFirestore.getInstance()
 
         // Reference to a collection
-        val collectionRef = db.collection("app_version")
-
+        val collectionRef = db.collection("yeardata")
         // Get documents in the collection
         collectionRef.get()
             .addOnSuccessListener { querySnapshot ->
                 Log.d("FirestoreData", "querySnapshot: $querySnapshot")
+                loader.visibility = View.GONE
                 for (doc in querySnapshot) {
-                    val versionData = doc.data
-                    val documentId = doc.id
-                    val versionCodeValue = versionData["version_code"]
+                    val yeardata = doc.data
+                    val yearData = yeardata["yearWisePaper"]
 
-                    if (versionCodeValue is Number) {
-                        val versionCode = versionCodeValue.toInt()
-                        Log.d("FirestoreData", "Document ID: $documentId, versionCode: $versionCode")
-                        checkAndUpdateApp(versionCode)
-                    } else {
-                        Log.e("FirestoreData", "Invalid versionCode format in document: $documentId")
+                    if (yearData is List<*>) {
+                        arrYearData.addAll(yearData.filterIsInstance<String>())
+                    } else if (yearData is String) {
+                        arrYearData.add(yearData)
                     }
+
+                    Log.e(TAG, "yearData: $yearData")
+
+                    println(yearData)
                 }
+
+                if(arrYearData.isNotEmpty()){
+                    Log.d(TAG, "arrYearData ==> $arrYearData")
+                    recyclerView.layoutManager = GridLayoutManager(this@HomeActivity, 2)
+                    val rvAdapter = HomeAdapter(this@HomeActivity, arrYearData)
+                    recyclerView.adapter = rvAdapter
+                }
+
             }
             .addOnFailureListener { error ->
                 Log.e("FirestoreError", "Error getting documents: $error")
             }
 
 
-    }
-
-
-
-    fun checkAndUpdateApp(versionCode: Int) {
-        val currentVersionCode = Constants.getCurrentVersionCode(this)
-
-        if (currentVersionCode != versionCode) {
-            Constants.showUpdateDialog(this)
-        }
     }
 
 }

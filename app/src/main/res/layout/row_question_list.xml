@@ -114,11 +114,11 @@
 
                 <TextView
                     android:id="@+id/txtTypeQuestion"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_toStartOf="@+id/imgSpeak"
                     android:fontFamily="@font/helvetica_rounded_bold_5871d05ead8de"
                     android:padding="@dimen/_6sdp"
                     android:text="Questions :"
@@ -126,18 +126,37 @@
                     android:textSize="@dimen/_13ssp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/quizQuestion"
+                <RelativeLayout
+                    android:layout_marginTop="@dimen/_15sdp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:layout_marginEnd="@dimen/_10sdp"
-                    android:fontFamily="@font/general_sans_medium"
-                    android:padding="@dimen/_10sdp"
-                    android:text="question"
-                    android:textColor="@color/light_white"
-                    android:textSize="@dimen/_15ssp" />
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/imgSpeak"
+                        android:id="@+id/quizQuestion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:fontFamily="@font/general_sans_medium"
+                        android:padding="@dimen/_10sdp"
+                        android:text="question"
+                        android:textColor="@color/light_white"
+                        android:textSize="@dimen/_15ssp" />
+
+
+                    <ImageView
+                        android:layout_centerVertical="true"
+                        android:id="@+id/imgSpeak"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:src="@drawable/voice_speak" />
+
+                </RelativeLayout>
 
 
             </LinearLayout>
